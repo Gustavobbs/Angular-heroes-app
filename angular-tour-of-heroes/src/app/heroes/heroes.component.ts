@@ -1,7 +1,8 @@
-import { HEROES } from './../mock-heroes';
+import { MessageService } from './../message.service';
+import { Observable } from 'rxjs';
+import { HeroService } from './../hero.service';
 import { Component, OnInit } from '@angular/core';
 import { Hero } from '../hero';
-import { HEROES } from '../mock-heroes';
 
 @Component({
   selector: 'app-heroes',
@@ -9,15 +10,22 @@ import { HEROES } from '../mock-heroes';
   styleUrls: ['./heroes.component.css']
 })
 export class HeroesComponent implements OnInit {
-  heroes = HEROES;
-  selectedHero: Hero;
+    heroes: Hero[];
+    selectedHero: Hero;
 
-  constructor() { }
+    constructor(private heroService: HeroService, private messageService: MessageService) { } //Defines an private property simultaneously
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        this.getHeroes();
+    }
 
-  onSelect(hero: Hero) {
-    this.selectedHero = hero;
-  }
+    getHeroes(): void {
+        this.heroService.getHeroes()
+        .subscribe(heroes => this.heroes = heroes);
+    }
+
+    onSelect(hero: Hero) {
+        this.selectedHero = hero;
+        this.messageService.add(`HeroService: SelectedHero id = ${hero.id}`);
+    }
 }
